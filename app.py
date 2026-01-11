@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')  # Ajout de async_mode
 
 # Stockage en mémoire pour les messages et utilisateurs par room
 rooms = {}  # {room: {'messages': [], 'users': set()}}
@@ -63,6 +63,7 @@ def on_stop_typing(data):
     room = data['room']
     emit('stop_typing', room=room, skip_sid=request.sid)
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Utilise le port de Railway ou 5000 par défaut
-    socketio.run(app, host='0.0.0.0', port=port, debug=False)  # Désactive debug pour prod
+# Supprimez ce bloc : Gunicorn le gère
+# if __name__ == '__main__':
+#     port = int(os.environ.get('PORT', 5000))
+#     socketio.run(app, host='0.0.0.0', port=port, debug=False)
